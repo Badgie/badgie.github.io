@@ -38,7 +38,8 @@ function getCode() {
 function getCredentials() {
     let url = window.location.href;
     let credentials = url.split('#')[1].split('&');
-    document.getElementById('yeet').innerHTML = credentials.join(', ')
+    document.cookie = credentials.join(', ');
+    console.log(document.cookie)
 }
 
 function updateDatabase(token) {
@@ -50,8 +51,8 @@ function updateDatabase(token) {
 }
 
 function randomString(length) {
-    let result           = '';
-    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
