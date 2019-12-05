@@ -23,16 +23,29 @@ function getCode() {
     let code = url.split('?code=')[1];
     let body = JSON.stringify({'grant_type': 'authorization_code', 'code': code, 'redirect_uri': REDIRECT_URL});
     let secret = btoa(CLIENT_ID + ':' + CLIENT_SECRET);
-    let http = new XMLHttpRequest();
-    http.onreadystatechange = function() {
+    //let http = new XMLHttpRequest();
+    $.ajax({
+        type: 'post',
+        url: OAUTH_TOKEN_URL,
+        contentType: 'application/json',
+        data: body,
+        dataType: 'json',
+        beforeSend: function (request) {
+            request.setRequestHeader('Authorization', 'Basic ' + secret);
+        },
+        success: function (result) {
+            updateDatabase(result);
+        },
+        async: true
+    });
+    /*http.onreadystatechange = function() {
         if (http.readyState === 4 && http.status === 200) {
             updateDatabase(JSON.parse(http.responseText));
         }
     };
     http.open('POST', OAUTH_TOKEN_URL, true);
     http.setRequestHeader('Authorization', 'Basic ' + secret);
-    http.send(body);
-    document.getElementById('yeet').innerHTML = secret;
+    http.send(body);*/
 }
 
 function updateDatabase(token) {
