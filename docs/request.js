@@ -1,13 +1,24 @@
 const URL_BASE = 'https://api.spotify.com/v1';
 let HEADER_MAP = new Map();
-HEADER_MAP.set("Authorization", "Bearer BQA-kv2sIdN-ElA1thEk51phDZFXCTt0Hp_5UjxqLIKHm0E3RnU690LJS3G3OG36tPZEbB5Few6TYPdNso7xaNkiNTz_91nIjuE9RRGc0ZY2ZKdOSZdNhI77GvFO3b9y01nUCKPr70VlHQSss3TK4D2rEMv051eoQXT2R4eC15ymmZlEjAFoOzsQ0GTyRH_E-Io_vs1ULzi51NEc9iwC03JKdQbhw2bRLHTuLG8Lr4DjnQ");
+let CREDENTIALS = setCredentials();
+HEADER_MAP.set("Authorization", "Bearer " + CREDENTIALS.get('access_token'));
 
 function topList(topType) {
     let params = JSON.stringify({"limit": 50});
+    let topList = null;
     let callback = function (data) {
-         parseResponse(data)
+         topList = JSON.parse(data);
     };
     request("GET", URL_BASE + "/me/top/" + topType, callback, 200, params);
+    console.log(topList);
+    return topList;
+}
+
+function userID() {
+    let callback = function (data) {
+
+    };
+    request('GET', URL_BASE + '/me', callback, 200);
 }
 
 function parseResponse(data) {
@@ -29,4 +40,15 @@ function request(requestType, url, callback, expectedResponse, body) {
         xmlHttp.setRequestHeader(key, value)
     });
     xmlHttp.send(body);
+}
+
+function setCredentials() {
+    let cookie = document.cookie;
+    let map = new Map();
+    for (let cred of cookie.split(', ')) {
+        let kv = cred.split('=');
+        map.set(kv[0], kv[1]);
+        //TODO: handle token expiration edge-case
+    }
+    return map;
 }
