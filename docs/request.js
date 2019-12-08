@@ -57,18 +57,20 @@ function setCredentials(data) {
  * @param type: type of recommendation
  */
 function setSeeds(type) {
-    let params = {};
+    let params = "";
     let callback = function (content) {
         DATA_JSON = JSON.parse(content);
     };
     switch(type) {
         case 'artists':
-            params = JSON.stringify({"limit": 50});
-            request("GET", URL_BASE + "/me/top/artists", callback, 200, params);
+            //params = JSON.stringify({"limit": 50});
+            params = 'limit=50';
+            request("GET", URL_BASE + "/me/top/artists?" + params, callback, 200, params);
             break;
         case 'tracks':
             params = JSON.stringify({"limit": 50});
-            request("GET", URL_BASE + "/me/top/tracks", callback, 200, params);
+            params = 'limit=50';
+            request("GET", URL_BASE + "/me/top/tracks?" + params, callback, 200, params);
             break;
         case 'genres':
 

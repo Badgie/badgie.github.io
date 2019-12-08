@@ -76,14 +76,18 @@ function displaySeeds() {
     SEED_LENGTH = DATA_JSON['items'].length;
 
     // loop through seeds and apply each as a column with a checkbox selection
-    for (let i = 0; i < SEED_LENGTH; i += 2) {
+    for (let i = 0; i < SEED_LENGTH; i += 3) {
         box += '<div class="row justify-content-center">';
-        for (let j = 0; j < 2; j++) {
+        for (let j = 0; j < 3; j++) {
             if ((i + j) >= SEED_LENGTH) {
-                box += '<div class="col-lg-6"></div>';
+                box += '<div class="col-lg-3"></div>';
                 break;
             }
-            box += '<div class="col-lg-6"><input type="checkbox" value="' + (i + j) + '" id="seed' + (i + j + 1) + '"/><label for="seed' + (i + j + 1) + '" style="color:white;margin-left:5px">' + DATA_JSON['items'][i + j]['name'] +'</label></div>';
+            box += '<div class="col-lg-3"><input type="checkbox" value="' + (i + j) + '" id="seed' + (i + j + 1) + '"/>' +
+                '<label for="seed' + (i + j + 1) + '" style="color:white;margin-left:5px">';
+            if (DATA_JSON['items'][i + j]['name'].length > 24) box += DATA_JSON['items'][i + j]['name'].substring(0, 21) + '...';
+            else box += DATA_JSON['items'][i + j]['name'];
+            box += '</label></div>';
         }
         box += '</div>'
     }
