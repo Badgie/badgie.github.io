@@ -2,6 +2,7 @@ let SCHEME = [];
 let SEED_COUNT = 0;
 let LIMIT = 0;
 let SEED_LENGTH = 0;
+let LIMIT_BUTTON = "";
 
 /**
  * Show recommendation scheme header when 'start' is clicked on spotirec index
@@ -19,6 +20,7 @@ function processSchemeSelectAuto(type) {
 
     // workaround to ensure scrolling on click
     document.getElementById('limitContinueAuto').hidden = false;
+    LIMIT_BUTTON = 'limitContinueAuto';
     document.getElementById('seedCount').hidden = false;
 
     // retrieve seeds now to ensure they are ready
@@ -34,7 +36,9 @@ function processSchemeSelectCustom(type) {
 
     // workaround to ensure scrolling on click
     document.getElementById('limitContinueCustom').hidden = false;
+    LIMIT_BUTTON = 'limitContinueCustom';
     document.getElementById('limit').hidden = false;
+    addLimitCheck();
 
     // retrieve seeds now to ensure they are ready
     setSeeds(SCHEME[0][1]);
@@ -47,6 +51,7 @@ function processSchemeSelectCustom(type) {
 function processSeedCount(count) {
     SEED_COUNT = count;
     document.getElementById('limit').hidden = false;
+    addLimitCheck();
 }
 
 /**
@@ -87,7 +92,11 @@ function displaySeeds() {
     // apply eventhandler to checkboxes that ensures 1-5 seeds are selected
     for (let i = 0; i < SEED_LENGTH; i++) {
         document.getElementById('seed' + (i + 1)).addEventListener('change', function() {
-            if (isSelectionPresent()) document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger';
+            if (isSelectionPresent()) {
+                document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger';
+            } else {
+                document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger inactive';
+            }
             isSeedSelectionMax();
         });
     }
@@ -129,4 +138,26 @@ function setCheckboxDisabled(state) {
         if (document.getElementById('seed' + (i + 1)).checked === false)
             document.getElementById('seed' + (i + 1)).disabled = state;
     }
+}
+
+function addLimitCheck() {
+    document.getElementById('trackCount').addEventListener('keyup', function () {
+        let limit = parseInt(document.getElementById('trackCount').value);
+        let error = document.getElementById('limitError');
+        let limitButton = document.getElementById(LIMIT_BUTTON);
+        if (isNaN(limit)) {
+            error.innerText = 'Input value must be a number.';
+            error.hidden = false;
+            limitButton.className = 'btn btn-custom js-scroll-trigger inactive';
+            return 0;
+        }
+        if (limit > 100 || limit < 0) {
+            error.innerText = 'Input value must be in the range 1-100';
+            error.hidden = false;
+            limitButton.className = 'btn btn-custom js-scroll-trigger inactive';
+        } else {
+            error.hidden = true;
+            limitButton.className = 'btn btn-custom js-scroll-trigger';
+        }
+    })
 }

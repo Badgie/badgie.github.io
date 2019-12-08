@@ -110,11 +110,16 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">1-100</span>
                         </div>
-                        <input type="text" class="form-control" id="trackCount" aria-describedby="inputGroup-sizing-sm">
+                        <input type="number" step="1" min="1" max="100" class="form-control" value="20" id="trackCount">
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center" style="margin-top:3em">
+            <div class="row justify-content-center">
+                <div class="col-lg-4 text-center">
+                    <span hidden id="limitError" style="color:red"></span>
+                </div>
+            </div>
+            <div class="row justify-content-center" style="margin-top:1em">
                 <a hidden class="btn btn-custom js-scroll-trigger" id="limitContinueAuto" href="#finalize" onclick="processLimit()">Continue</a>
                 <a hidden class="btn btn-custom js-scroll-trigger" id="limitContinueCustom" href="#seeds" onclick="processLimit()">Continue</a>
             </div>
