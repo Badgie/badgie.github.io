@@ -73,37 +73,97 @@ function processLimit() {
  */
 function displaySeeds() {
     let box = "";
-    SEED_LENGTH = DATA_JSON['items'].length;
 
-    // loop through seeds and apply each as a column with a checkbox selection
-    for (let i = 0; i < SEED_LENGTH; i += 3) {
-        box += '<div class="row justify-content-center">';
-        for (let j = 0; j < 3; j++) {
-            if ((i + j) >= SEED_LENGTH) {
-                box += '<div class="col-lg-3"></div>';
-                break;
-            }
-            box += '<div class="col-lg-3"><input type="checkbox" value="' + (i + j) + '" id="seed' + (i + j + 1) + '"/>' +
-                '<label for="seed' + (i + j + 1) + '" style="color:white;margin-left:5px">';
-            if (DATA_JSON['items'][i + j]['name'].length > 24) box += DATA_JSON['items'][i + j]['name'].substring(0, 21) + '...';
-            else box += DATA_JSON['items'][i + j]['name'];
-            box += '</label></div>';
-        }
-        box += '</div>'
-    }
-    document.getElementById('scrollBoxSeeds').innerHTML = box;
-
-    // apply eventhandler to checkboxes that ensures 1-5 seeds are selected
-    for (let i = 0; i < SEED_LENGTH; i++) {
-        document.getElementById('seed' + (i + 1)).addEventListener('change', function() {
-            if (isSelectionPresent()) {
-                document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger';
+    // 'any' (custom seed) is handled differently than the rest
+    if (SCHEME[0][1] !== 'any') {
+        let data;
+        if (SCHEME[0][1] === 'artists' || SCHEME[0][1] === 'tracks') {
+            SEED_LENGTH = DATA_JSON['items'].length;
+            data = DATA_JSON['items'];
+        } else {
+            if (SCHEME[0][1] === 'genre-seeds') {
+                SEED_LENGTH = DATA_JSON['genres'].length;
+                data = DATA_JSON['genres'];
             } else {
-                document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger inactive';
+                data = extractTopGenres();
+                SEED_LENGTH = data.length;
             }
-            isSeedSelectionMax();
-        });
+        }
+
+        // loop through seeds and apply each as a column with a checkbox selection
+        for (let i = 0; i < SEED_LENGTH; i += 3) {
+            box += '<div class="row justify-content-center">';
+            for (let j = 0; j < 3; j++) {
+
+                // if index is out of bounds, break loop
+                if ((i + j) >= SEED_LENGTH) {
+                    box += '<div class="col-lg-3"></div>';
+                    break;
+                }
+
+                let item = null;
+                if (SCHEME[0][1] === 'artists' || SCHEME[0][1] === 'tracks') {
+                    item = data[i + j]['name'];
+                } else {
+                    item = data[i + j];
+                }
+                box += '<div class="col-lg-3"><input type="checkbox" value="' + (i + j) + '" id="seed' + (i + j + 1) + '"/>' +
+                    '<label for="seed' + (i + j + 1) + '" style="color:white;margin-left:5px">';
+
+                // if name length is too long, trim
+                if (item.length > 24) box += item.substring(0, 21) + '...';
+                else box += item;
+                box += '</label></div>';
+            }
+            box += '</div>'
+        }
+
+        document.getElementById('scrollBoxSeeds').innerHTML = box;
+
+        // apply eventhandler to checkboxes that ensures 1-5 seeds are selected
+        for (let i = 0; i < SEED_LENGTH; i++) {
+            document.getElementById('seed' + (i + 1)).addEventListener('change', function () {
+                if (isSelectionPresent()) {
+                    document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger';
+                } else {
+                    document.getElementById('seedButton').className = 'btn btn-custom js-scroll-trigger inactive';
+                }
+                isSeedSelectionMax();
+            });
+        }
+    } else {
+        for (let i = 0; i < 5; i++) {
+            box += '<div class="col-lg-12 text-center" style="margin-top:1em">' +
+                '<input type="text" id="seed' + (i + 1) + '"/></div>'
+        }
+        document.getElementById('seedHeader').innerText = 'Define your seeds';
+        document.getElementById('scrollBoxSeeds').innerHTML = box;
+        //TODO: add validity check for spotify uris or genres
     }
+}
+
+function extractTopGenres() {
+    let genres = new Map();
+    for (let artist of DATA_JSON['items']) {
+        for (let genre of artist['genres']) {
+            genre = genre.replace(' ', '-');
+            if (GENRE_SEEDS.includes(genre)) {
+                if (genres.hasOwnProperty(genre)) {
+                    let count = genres.get(genre);
+                    genres.set(genre, count + 1);
+                } else {
+                    genres.set(genre, 1);
+                }
+            }
+        }
+    }
+    genres[Symbol.iterator] = function* () {
+        yield* [...this.entries()].sort((a, b) => a[1] - b[1]);
+    };
+    let genreArray = [];
+    for (let genre of [...genres]) genreArray.push(genre[0]);
+    DATA_JSON = genreArray;
+    return genreArray;
 }
 
 function createPlaylist() {

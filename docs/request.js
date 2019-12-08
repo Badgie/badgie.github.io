@@ -2,6 +2,7 @@ const URL_BASE = 'https://api.spotify.com/v1';
 let HEADER_MAP = new Map();
 let CREDENTIALS;
 let DATA_JSON;
+let GENRE_SEEDS; // used for top genres
 
 function topList(topType) {
     let params = JSON.stringify({"limit": 50});
@@ -63,20 +64,23 @@ function setSeeds(type) {
     };
     switch(type) {
         case 'artists':
-            //params = JSON.stringify({"limit": 50});
             params = 'limit=50';
-            request("GET", URL_BASE + "/me/top/artists?" + params, callback, 200, params);
+            request('GET', URL_BASE + "/me/top/artists?" + params, callback, 200);
             break;
         case 'tracks':
-            params = JSON.stringify({"limit": 50});
             params = 'limit=50';
-            request("GET", URL_BASE + "/me/top/tracks?" + params, callback, 200, params);
+            request('GET', URL_BASE + "/me/top/tracks?" + params, callback, 200);
             break;
         case 'genres':
-
+            params = 'limit=50';
+            request('GET', URL_BASE + "/me/top/artists?" + params, callback, 200);
+            let seedCallback = function(content) {
+                GENRE_SEEDS = JSON.parse(content)['genres'];
+            };
+            request('GET', URL_BASE + '/recommendations/available-genre-seeds', seedCallback, 200);
             break;
         case 'genre-seeds':
-
+            request('GET', URL_BASE + '/recommendations/available-genre-seeds', callback, 200);
             break;
         case 'any':
 
