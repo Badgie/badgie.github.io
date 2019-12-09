@@ -43,7 +43,9 @@
             <div class="row h-100">
                 <div class="col-lg-7 my-auto">
                     <div class="mx-auto header-content" id="root">
-                        <h2 class="mb-5" id="header">Welcome to Spotirec! Press 'start' to begin!</h2><a class="btn btn-outline-warning btn-xl js-scroll-trigger" role="button" onclick="start()" href="#scheme">Start</a></div>
+                        <h2 class="mb-5" id="header">Welcome to Spotirec! Press 'start' to begin!</h2>
+                        <a class="btn btn-outline-warning btn-xl js-scroll-trigger" role="button" onclick="start()" href="#scheme">Start</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -114,11 +116,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-4 text-center">
-                    <span hidden id="limitError" style="color:red"></span>
-                </div>
-            </div>
             <div class="row justify-content-center" style="margin-top:1em">
                 <a hidden class="btn btn-custom js-scroll-trigger" id="limitContinueAuto" href="#finalize" onclick="processLimit()">Continue</a>
                 <a hidden class="btn btn-custom js-scroll-trigger" id="limitContinueCustom" href="#seeds" onclick="processLimit()">Continue</a>
@@ -138,22 +135,32 @@
                 </div>
             </div>
             <div class="row justify-content-center" style="margin-top:1em">
-                <a class="btn btn-custom js-scroll-trigger inactive" id="seedButton" href="#finalize" onclick="createPlaylist()">Select</a>
+                <a class="btn btn-custom js-scroll-trigger inactive" id="seedButton" href="#playlistCreation" onclick="recommend()">Select</a>
             </div>
         </div>
     </section>
     <section hidden id="playlistCreation" style="background:url('assets/img/bg.png'), linear-gradient(to bottom, #136b32, #000000);height:100%;">
         <div class="container">
-            <h1 class="section-heading text-center">Creating your playlist...</h1>
-        </div>
-    </section>
-    <section hidden id="finalize" style="background:url('assets/img/bg.png'), linear-gradient(to bottom, #136b32, #000000);height:100%;">
-        <div class="container">
             <div class="section-heading text-center">
-                <h2 class="txtcl">Enjoy your playlist!</h2>
+                <h1 class="txtcl">Creating your playlist...</h1><a class="js-scroll-trigger" href="#finalize" id="playlistCreated"></a>
             </div>
         </div>
     </section>
+
+    <header hidden class="masthead" id="finalize" style="background:url('assets/img/bg.png'), linear-gradient(to bottom, #000000, #136b32, #000000);height:100%;">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-lg-12 my-auto text-center">
+                    <div class="section-heading text-center mx-auto header-content">
+                        <h2 class="txtcl">Enjoy your playlist!</h2>
+                    </div>
+                    <iframe id="playlistEmbed" width="600" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                </div>
+            </div>
+            <div class="section-heading text-center">
+            </div>
+        </div>
+    </header>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>

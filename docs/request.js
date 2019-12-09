@@ -1,19 +1,9 @@
 const URL_BASE = 'https://api.spotify.com/v1';
 let HEADER_MAP = new Map();
+HEADER_MAP.set('Content-Type', 'application/json');
 let CREDENTIALS;
 let DATA_JSON;
 let GENRE_SEEDS; // used for top genres
-
-function topList(topType) {
-    let params = JSON.stringify({"limit": 50});
-    let topList = null;
-    let callback = function (data) {
-         topList = JSON.parse(data);
-    };
-    request("GET", URL_BASE + "/me/top/" + topType, callback, 200, params);
-    console.log(topList);
-    return topList;
-}
 
 /**
  * Make API request
@@ -49,6 +39,7 @@ function setCredentials(data) {
         map.set(kv[0], kv[1]);
         //TODO: handle token expiration edge-case - this only happens if user stays on page for more than an hour
         // NOTE: maybe add 'create another recommendation' button that reloads page with new auth
+        // NOTE: finalize could be a "page" for itself - much like pre- and post-auth indexes
     }
     return map;
 }
@@ -64,11 +55,13 @@ function setSeeds(type) {
     };
     switch(type) {
         case 'artists':
-            params = 'limit=50';
+            if (SCHEME[1][1] === 'auto') params = 'limit=5';
+            else params = 'limit=50';
             request('GET', URL_BASE + "/me/top/artists?" + params, callback, 200);
             break;
         case 'tracks':
-            params = 'limit=50';
+            if (SCHEME[1][1] === 'auto') params = 'limit=5';
+            else params = 'limit=50';
             request('GET', URL_BASE + "/me/top/tracks?" + params, callback, 200);
             break;
         case 'genres':
@@ -81,9 +74,6 @@ function setSeeds(type) {
             break;
         case 'genre-seeds':
             request('GET', URL_BASE + '/recommendations/available-genre-seeds', callback, 200);
-            break;
-        case 'any':
-
             break;
     }
 }
