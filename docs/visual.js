@@ -278,7 +278,7 @@ function retrieveSeeds() {
     } else {
         let data;
         if (SCHEME[0][1] === 'genres') {
-            data = extractTopGenres();
+            data = DATA_JSON;
         } else if (SCHEME[0][1] === 'genre-seeds') {
             data = DATA_JSON['genres'];
         } else {
